@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма реєстрації</title>
+</head>
+<body>
+
+<?php
+    $surname = $languages = $location = $time = "";
+    $error = "";
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $surname = test_input($_POST["surname"]);
+        $languages = isset($_POST["languages"]) ? $_POST["languages"] : [];
+        $location = isset($_POST["location"]) ? $_POST["location"] : [];
+        $time = test_input($_POST["time"]);
+
+        if (empty($surname) || empty($languages) || empty($location) || empty($time)) {
+            $error = "Введені дані не коректні, заповніть всі поля";
+        } else {
+            echo "<p>Слухач \"$surname\" обрав для вивчення курси з мов \"" . implode(", ", $languages) . "\".
+                  Можливе місце проведення занять \"" . implode(", ", $location) . "\" та година \"$time\".</p>";
+        }
+    }
+
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+?>
+
+<form method="post" action="form1.php">
+    Ваше прізвище: <input type="text" name="surname">
+    <br><br>
+    Іноземні мови:
+    <select name="languages[]" multiple>
+        <option value="англ">Англійська</option>
+        <option value="нім">Німецька</option>
+        <option value="фр">Французька</option>
+        <option value="ісп">Іспанська</option>
+        <option value="іт">Італійська</option>
+    </select>
+    <br><br>
+    Місце проведення занять:
+    <input type="checkbox" name="location[]" value="ПНУ"> ПНУ
+    <input type="checkbox" name="location[]" value="ІФНМУ"> ІФНМУ
+    <input type="checkbox" name="location[]" value="ВПУ СОТ"> ВПУ СОТ
+    <input type="checkbox" name="location[]" value="ЦНТІ"> ЦНТІ
+    <br><br>
+    Час занять: 
+    <input type="radio" name="time" value="12.00"> 12.00
+    <input type="radio" name="time" value="13.00"> 13.00
+    <input type="radio" name="time" value="16.00"> 16.00
+    <input type="radio" name="time" value="18.00"> 18.00
+    <br><br>
+    <input type="submit" name="submit" value="Надіслати">
+</form>
+
+<p><?php echo $error; ?></p>
+
+</body>
+</html>
